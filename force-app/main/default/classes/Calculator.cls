@@ -1,11 +1,13 @@
 public class Calculator {
     //by default it is Private.
-    
+
     //parametersless method.
     public void welcomeMessage(){
         system.debug('welcome to apex calc, updated');
     }
-
+    //parameterized method.
+    //paramter:string
+    //it accepts a string,  and prints it. That's it
     public void printNewMessage (string msg){
         system.debug(msg);
     }
