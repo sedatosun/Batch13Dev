@@ -1,6 +1,7 @@
 public class Calculator {
     //by default it is Private.
-
+    
+    //parametersless method.
     public void welcomeMessage(){
         system.debug('welcome to apex calc, updated');
     }
