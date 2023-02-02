@@ -20,3 +20,5 @@ The `sfdx-project.json` file contains useful configuration information for your 
 
 
 #UPDATED
+
+- updated read me in feature 1 branch.
