@@ -29,4 +29,47 @@ public class ContactTriggerHandler {
             }
         }
     }
+
+    public static void rollUpSummary(List<contact> conTriggerNew,
+                                        List<contact> conTriggerOld,
+                                        Map<id, contact> conTriggerNewMap,
+                                        Map<id, contact> conTriggerOldMap) {
+        //when contact created and account is added --> increase count of number of contacts' that account
+        //contact is updated and account is changed -->increase count of NEW ACCOUNT. Decrease count of OLD ACCOUNT.
+        //                                          --> decrease count of OLD ACCOUNT.
+        //contact delete                            --> decrease count of OLD ACCOUNT.
+        //contact undeleted                         --> increase count of OLD ACCOUNT.
+        set<Id> accIds = new set<Id>();
+        //this if for INCREASE COUNT IDs
+        if (trigger.isInsert || trigger.isUpdate || trigger.isUndelete) {
+            for (contact eachCon : conTriggerNew) {
+                if (eachCon.accountId != null) {
+                    accIds.add(eachCon.AccountId);
+                }
+            }
+        }
+        //this if for DECREASE COUNT IDs
+        if (trigger.isDelete || trigger.isUpdate) {
+            for (contact eachCon : conTriggerOld) {
+                if (eachCon.accountId != null) {
+                    accIds.add(eachCon.AccountId);
+                }
+            }
+        }
+        system.debug('account ids ' + accIds);
+
+        list<account> listAccount = [select id, number_of_contacts__c, (select id from contacts) from account 
+                                    where id in :accIds];
+        for (account eachAcc : listAccount) {
+            integer numOfContacts = 0;
+            if (eachAcc.Contacts != null) {
+                numOfContacts = eachAcc.Contacts.size();
+            } 
+            //set number of contacts' field value to SIZE
+            eachAcc.number_of_contacts__c = numOfContacts;
+        }
+        if (!listAccount.isEmpty()) {
+            update listAccount;
+        }
+    }
 }
