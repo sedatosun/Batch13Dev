@@ -5,9 +5,10 @@ public class AccountTriggerHandler {
                                         Map<id, account> accTriggerNewMap,
                                         Map<id, account> accTriggerOldMap) {
         for (Account eachAcc : accTriggerNew) {
+            Boolean updateDesc = false;
             if (Trigger.isInsert && eachAcc.active__c == 'Yes') {
                 //update description field
-                eachAcc.Description = 'Account is active now. Enjoy buddy!';
+                updateDesc = true;
             }
             if (Trigger.isUpdate) {
                 //check if active field is changed from 'No' or '--None--'' to  'Yes'.
@@ -25,9 +26,42 @@ public class AccountTriggerHandler {
 
                 //check if active field is changed from 'No' or '--None--'' to  'Yes'.
                 if(newActive != oldAccount.Active__c && newActive == 'Yes'){
-                    eachAcc.Description = 'Account is active now. Enjoy Enjoy buddy!';
+                    updateDesc = true;
                 }
             }
+            if (updateDesc) {
+                eachAcc.Description = 'Account is active now. Enjoy Enjoy Enjoy buddy!';
+            }
         }
+    }
+    //new method here
+    public static void updateVIPForAllContact(List<Account> accTriggerNew,
+                                        List<account> accTriggerOld,
+                                        Map<id, account> accTriggerNewMap,
+                                        Map<id, account> accTriggerOldMap) {
+        //get account ids where VIP field is CHANGED.
+        set<ID> accIds = new set<ID>();
+        //get old account using Trigger.Oldmap
+        for (account eachAcc : accTriggerNew) {
+            //compare old and new VIP fields. If not equal then add ID in SET
+            if (eachAcc.vip__c != accTriggerOldMap.get(eachAcc.Id).vip__c) {
+                accIds.add(eachAcc.Id);
+            }
+        }
+        //get all contacts of all the account where VIP is changed
+        list<contact> getContacts = [select id, vip__c, accountId from contact where accountId in: accIds];
+        for (contact eachContact : getContacts) {
+            id accId = eachContact.AccountId;
+            //get new account from Trigger.newMap using get.(key) method
+            account newAcc = accTriggerNewMap.get(accId);
+            //get VIP field value of new Account
+            Boolean accVIP = newAcc.vip__c;
+
+            eachContact.vip__c = accVIP;
+        }
+        if (!getContacts.isEmpty()) {
+            update getContacts;
+        }
+        
     }
 }
