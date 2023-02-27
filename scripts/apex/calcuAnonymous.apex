@@ -4,7 +4,7 @@ boolean lpy = c.leapYearCheck(ddt);
 system.debug('today date is leap year? ' + lpy);
 
 Calculator c1 = new Calculator();
-string parameter1 = 'printing this for batch13';y
+string parameter1 = 'printing this for batch13';
 string yes = c1.printAndReturnMessage(parameter1);
 system.debug('return message: ' + yes);
 
