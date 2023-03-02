@@ -38,13 +38,40 @@ update,before insert,after insert,after update) {
     }
 }
 */
+
 trigger SalesforceProjectTrigger on Salesforce_Project__c (before update,before insert,after insert,after update) {
     if (trigger.isAfter && trigger.isInsert) {
+        system.debug('calling future method now...');
+        //SPTriggerHandler.futureOne();
+        SPTriggerHandler.updateProjectDescription(trigger.newMap.keySet());
+        system.debug('JUST call future method...');
+        //call handler here.
+        //SPTriggerHandler.futureOne();
         //call handler here.
         SPTriggerHandler.createDefaultTicket(trigger.new);
+    }
+    if (trigger.isBefore && trigger.isUpdate) {
+        //call method to validate ticket completion.
+        //SPTriggerHandler.validateProjectCompletion(trigger.new, trigger.old, trigger.newMap, trigger.oldMap);
+    }
+    if (trigger.isAfter & trigger.isUpdate) {
+        //call method1
+        SPTriggerHandler.projectStatusChange(trigger.new, trigger.old, trigger.newMap, trigger.oldMap);
+    }
+}
+/*
+trigger SalesforceProjectTrigger on Salesforce_Project__c (before update,before insert,after insert,after update) {
+    if (trigger.isAfter && trigger.isInsert) {
+        system.debug('calling future method now...');
+        //SPTriggerHandler.futureOne();
+        SPTriggerHandler.updateProjectDescription(trigger.newMap.keySet());
+        system.debug('JUST call future method...');
+        //call handler here.
+        //SPTriggerHandler.futureOne();
     }
     if (trigger.isBefore && trigger.isUpdate) {
         //call method to validate ticket completion.
         SPTriggerHandler.validateProjectCompletion(trigger.new, trigger.old, trigger.newMap, trigger.oldMap);
     }
 }
+*/

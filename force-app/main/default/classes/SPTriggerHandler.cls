@@ -37,4 +37,56 @@ public class SPTriggerHandler {
             }
         }
     }
+
+    //1.STATIC
+    //2.IT must return VOID
+    /*
+    @future
+    public static void futureOne(){
+        system.debug('this system debug is inside FUTURE method');
+    }
+    */
+    
+    @future
+    public static void updateProjectDescription(set<id> spIds) {
+        if (!spIds.isEmpty()) {
+            list<Salesforce_Project__c> listSP = [select id, description__c from Salesforce_Project__c where id in :spIds];
+        for (Salesforce_Project__c eachSP : listSP) {
+            eachSP.description__c = 'updated desc from future method';
+        }
+        update listSP;
+        }
+    }
+
+    //METHOD1 (normal method)
+    //get set<id> of project for which status is changed to completed.
+    //call method2(setId)
+    public static void projectStatusChange(list<Salesforce_Project__c> spTriggerNew,
+    list<Salesforce_Project__c> spTriggerOld, map<id, Salesforce_Project__c> spTriggerNewMap, map<id, Salesforce_Project__c> spTriggerOldMap) {
+        set<id> spIds = new set<id>();
+        for (Salesforce_Project__c sp : spTriggerNew) {
+            //check if status is changed to completed
+            if (sp.status__c == 'Completed' && sp.status__c != spTriggerOldMap.get(sp.Id).status__c) {
+                spIds.add(sp.Id);
+            }
+        }
+        if (!spIds.isEmpty()) {
+            //call future method
+            updateTicketStatus(spIds);
+        }
+    }
+
+    //Method2 (future method)
+    //get all tickets of setId project ids
+    //update status to completed.
+    @future
+    private static void updateTicketStatus(set<id> spIds) {
+        //update all tickets
+        //get all tickets
+        List<Salesforce_Ticket__c> allST = [select id, status__c, salesforce_Project__c from Salesforce_Ticket__c where Salesforce_Project__c in:spIds and status__c != 'Completed'];
+        for (Salesforce_Ticket__c st : allST) {
+            st.Status__c = 'Completed';
+        }
+        update allST;
+    }
 }

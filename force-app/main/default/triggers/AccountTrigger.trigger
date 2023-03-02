@@ -1,8 +1,6 @@
-trigger AccountTrigger on Account (after insert) {
-    AccountHandler_assg.createContact(Trigger.New);
-}
+/*trigger AccountTrigger on Account (after insert) {
+    */
 
-/*
 trigger AccountTrigger on Account (before insert, before update, after insert, after update) {
     system.debug('----trigger start----');
     if (trigger.isBefore) {
@@ -13,7 +11,7 @@ trigger AccountTrigger on Account (before insert, before update, after insert, a
         AccountTriggerHandler.updateVIPForAllContact(Trigger.New, Trigger.Old, Trigger.NewMap, Trigger.OldMap);
         }
     }
-*/
+
 
     /*
     map<id, account> trgNewMap = trigger.newMap;//key = ID, value = record
