@@ -116,4 +116,25 @@ public class AccountTriggerHandlerTest {
             assert.areEqual(true, cc.vip__c);
         }
     }
+    @isTest
+    private static void testFutureMethod() {
+        account acc = new account();
+        acc.Name = 'Test Future';
+        insert acc;
+
+        contact con = new contact();
+        con.LastName = 'Future';
+        con.AccountId = acc.Id;
+        insert con;
+
+        set<id> setAccId = new set<id>();
+        setAccId.add(acc.Id);
+
+        Test.startTest();
+        AccountTriggerHandler.futureMethod(setAccId);
+        Test.stopTest();
+
+        account ac = [select Number_of_Contacts__c from Account where id =: acc.Id];
+        system.assertEquals(Integer.valueOf(ac.Number_of_Contacts__c), 1);
+    }
 }

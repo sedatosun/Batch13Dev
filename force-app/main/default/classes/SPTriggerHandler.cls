@@ -1,5 +1,6 @@
 public class SPTriggerHandler {
     public static void createDefaultTicket(list<Salesforce_Project__c> spTriggerNew) {
+        try {
         list<Salesforce_Ticket__c> newTickets = new List<Salesforce_Ticket__c>();
         for (Salesforce_Project__c eachSP : spTriggerNew) {
             //create new ticket here
@@ -11,8 +12,13 @@ public class SPTriggerHandler {
         }
         if (!newtickets.isEmpty()) {
             insert newTickets;
+        } 
+    } catch (Exception ex) {
+            For (Salesforce_Project__c eachSp : spTriggerNew) {
+                eachSP.addError('ERROR in creating default ticket. Please contact your administrator, not developer');
+            }
         }
-    }
+    } 
 
     public static void validateProjectCompletion(list<Salesforce_Project__c> spTriggerNew,
     list<Salesforce_Project__c> spTriggerOld, map<id, Salesforce_Project__c> spTriggerNewMap, map<id, Salesforce_Project__c> spTriggerOldMap) {

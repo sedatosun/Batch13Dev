@@ -65,4 +65,16 @@ public class AccountTriggerHandler {
             }
         }
     }
+
+    @future
+    public static void futureMethod(set<id> accIds) {
+        if (!accIds.isEmpty()) {
+            List<Account> listAcc = [select id, name, Number_of_Contacts__c, (select id from contacts) from Account WHERE id in :accIds];
+            for (account eachAcc : listAcc) {
+                list<contact> conList = eachAcc.Contacts;
+                eachAcc.Number_of_Contacts__c = conList.size();
+            }
+            update listAcc;
+        }
+    }
 }
