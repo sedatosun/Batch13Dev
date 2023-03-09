@@ -77,4 +77,22 @@ public class AccountTriggerHandler {
             update listAcc;
         }
     }
+    public static void contactStatusValidation(List<Account> listAcc) {
+        try {
+            list<contact> conList = new list<contact>();
+            for (account eachAcc : listAcc) {
+                contact c = new contact();
+                c.LastNAme = 'validation test ' + eachAcc.Name;
+                c.AccountId = eachAcc.Id;
+                conList.add(c);
+            }
+            if (!conList.isEmpty()) {
+                insert conList;
+            }
+        } catch (Exception ex) {
+            for (account acc : listAcc) {
+                acc.addError(system.label.statusField);
+            }
+        }
+    }
 }

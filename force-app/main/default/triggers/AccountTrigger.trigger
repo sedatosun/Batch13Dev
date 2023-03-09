@@ -1,7 +1,17 @@
+/*
+trigger AccountTrigger on Account (before insert) {
+    AccountTriggerHandler.contactStatusValidation(trigger.new);
+}
+*/
 /*trigger AccountTrigger on Account (after insert) {
     */
 
 trigger AccountTrigger on Account (before insert, before update, after insert, after update) {
+    //if account trigger is disabled, then return.
+    TriggerSwitch__c ts = TriggerSwitch__c.getInstance('account');
+    if(!ts.enabled__c){
+        return;
+    }
     system.debug('----trigger start----');
     if (trigger.isBefore) {
         AccountTriggerHandler.updateDescription(Trigger.New, Trigger.Old, Trigger.NewMap, Trigger.OldMap);
@@ -10,8 +20,8 @@ trigger AccountTrigger on Account (before insert, before update, after insert, a
         //call VIP update method.
         AccountTriggerHandler.updateVIPForAllContact(Trigger.New, Trigger.Old, Trigger.NewMap, Trigger.OldMap);
         }
+    system.debug('----trigger end----');
     }
-
 
     /*
     map<id, account> trgNewMap = trigger.newMap;//key = ID, value = record
